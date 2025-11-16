@@ -1,0 +1,35 @@
+/**:
+  ros__parameters:
+    # CAMPUS-OPTIMIZED PURE PURSUIT PARAMETERS
+    # Tuned for low-speed campus environment (5-20 km/h)
+    # Focus: pedestrian safety, smooth ride, tight path following
+
+    # Lookahead Distance Configuration
+    # Reduced for better tracking at low speeds and tight turns
+    ld_velocity_ratio: 1.8                    # Default: 2.4 → Campus: 1.8 (tighter following)
+    ld_lateral_error_ratio: 3.0               # Default: 3.6 → Campus: 3.0 (moderate error correction)
+    ld_curvature_ratio: 80.0                  # Default: 120.0 → Campus: 80.0 (better curve tracking)
+    long_ld_lateral_error_threshold: 0.5      # Keep default
+
+    # Minimum/Maximum Lookahead Distances
+    # Significantly reduced for campus environment
+    min_lookahead_distance: 2.5               # Default: 4.35 → Campus: 2.5 m (tighter turns)
+    max_lookahead_distance: 8.0               # Default: 15.0 → Campus: 8.0 m (lower speeds)
+
+    # Convergence and Reverse Driving
+    converged_steer_rad: 0.1                  # Keep default
+    reverse_min_lookahead_distance: 4.0       # Default: 7.0 → Campus: 4.0 m (tighter reverse)
+
+    # Prediction Parameters
+    # Maintain for stability
+    prediction_ds: 0.3                        # Keep default
+    prediction_distance_length: 21.0          # Keep default
+
+    # Trajectory Resampling
+    resampling_ds: 0.1                        # Keep default (fine resolution)
+    curvature_calculation_distance: 3.0       # Default: 4.0 → Campus: 3.0 (responsive to curves)
+
+    # Path Smoothing
+    # Enable for passenger comfort
+    enable_path_smoothing: true               # Default: false → Campus: true (smoother ride)
+    path_filter_moving_ave_num: 35            # Default: 25 → Campus: 35 (more smoothing)

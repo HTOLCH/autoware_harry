@@ -1,0 +1,99 @@
+/**:
+  ros__parameters:
+    # CAMPUS-OPTIMIZED MPC PARAMETERS
+    # Tuned for low-speed campus environment (5-20 km/h)
+    # Focus: optimal control, smooth trajectories, pedestrian safety
+
+    # -- system --
+    traj_resample_dist: 0.1
+    use_steer_prediction: false
+    use_delayed_initial_state: true
+
+    # -- path smoothing --
+    # Enable for passenger comfort in campus environment
+    enable_path_smoothing: true               # Default: false → Campus: true
+    path_filter_moving_ave_num: 35            # Default: 25 → Campus: 35 (smoother)
+    curvature_smoothing_num_traj: 20          # Default: 15 → Campus: 20
+    curvature_smoothing_num_ref_steer: 20     # Default: 15 → Campus: 20
+
+    # -- trajectory extending --
+    extend_trajectory_for_end_yaw_control: true  # Default: false → Campus: true (precise stopping)
+
+    # -- mpc optimization --
+    qp_solver_type: "osqp"
+    mpc_prediction_horizon: 50                # Keep default (5 second horizon)
+    mpc_prediction_dt: 0.1
+
+    # MPC Weights - Campus Tuning
+    # Increase lateral error weight for tighter path following
+    mpc_weight_lat_error: 1.5                 # Default: 1.0 → Campus: 1.5 (tighter tracking)
+    mpc_weight_heading_error: 0.0
+    mpc_weight_heading_error_squared_vel: 0.4 # Default: 0.3 → Campus: 0.4
+
+    # Reduce steering input weight for smoother control
+    mpc_weight_steering_input: 0.8            # Default: 1.0 → Campus: 0.8 (smoother)
+    mpc_weight_steering_input_squared_vel: 0.2 # Default: 0.25 → Campus: 0.2
+
+    # Increase jerk weight for passenger comfort
+    mpc_weight_lat_jerk: 0.2                  # Default: 0.1 → Campus: 0.2 (smoother)
+    mpc_weight_steer_rate: 0.0001             # Default: 0.0 → Campus: 0.0001 (penalize rate)
+    mpc_weight_steer_acc: 0.00001             # Default: 0.000001 → Campus: 0.00001
+
+    # Low Curvature Weights (straight sections)
+    mpc_low_curvature_weight_lat_error: 0.1
+    mpc_low_curvature_weight_heading_error: 0.0
+    mpc_low_curvature_weight_heading_error_squared_vel: 0.3
+    mpc_low_curvature_weight_steering_input: 1.0
+    mpc_low_curvature_weight_steering_input_squared_vel: 0.25
+    mpc_low_curvature_weight_lat_jerk: 0.0
+    mpc_low_curvature_weight_steer_rate: 0.0
+    mpc_low_curvature_weight_steer_acc: 0.000001
+    mpc_low_curvature_thresh_curvature: 0.02  # Default: 0.0 → Campus: 0.02 (activate on straights)
+
+    # Terminal Weights
+    mpc_weight_terminal_lat_error: 1.5        # Default: 1.0 → Campus: 1.5 (precise goal)
+    mpc_weight_terminal_heading_error: 0.2    # Default: 0.1 → Campus: 0.2
+
+    mpc_zero_ff_steer_deg: 0.5
+    mpc_acceleration_limit: 1.2               # Default: 2.0 → Campus: 1.2 m/s² (comfort)
+    mpc_velocity_time_constant: 0.3
+    mpc_min_prediction_length: 5.0
+
+    # -- vehicle model --
+    vehicle_model_type: "kinematics"
+    input_delay: 0.24
+    vehicle_model_steer_tau: 0.27
+
+    # Steering Rate Limits - Campus Environment
+    # Slower steering for passenger comfort
+    steer_rate_lim_dps_list_by_curvature: [30.0, 40.0, 50.0]  # Default: [40, 50, 60] → Campus: [30, 40, 50]
+    curvature_list_for_steer_rate_lim: [0.001, 0.002, 0.01]
+
+    steer_rate_lim_dps_list_by_velocity: [50.0, 40.0, 30.0]   # Default: [60, 50, 40] → Campus: [50, 40, 30]
+    velocity_list_for_steer_rate_lim: [5.0, 10.0, 15.0]       # Default: [10, 15, 20] → Campus: [5, 10, 15]
+
+    acceleration_limit: 1.2                   # Default: 2.0 → Campus: 1.2 m/s² (comfort)
+    velocity_time_constant: 0.3
+
+    # -- lowpass filter for noise reduction --
+    steering_lpf_cutoff_hz: 2.5               # Default: 3.0 → Campus: 2.5 (smoother)
+    error_deriv_lpf_cutoff_hz: 4.0            # Default: 5.0 → Campus: 4.0
+
+    # stop state
+    stop_state_entry_ego_speed: 0.001
+    stop_state_entry_target_speed: 0.001
+    converged_steer_rad: 0.1
+    keep_steer_control_until_converged: true
+    new_traj_duration_time: 1.0
+    new_traj_end_dist: 0.3
+    mpc_converged_threshold_rps: 0.01
+
+    # steer offset
+    steering_offset:
+      enable_auto_steering_offset_removal: true
+      update_vel_threshold: 5.56
+      update_steer_threshold: 0.035
+      average_num: 1000
+      steering_offset_limit: 0.02
+
+    publish_debug_trajectories: true

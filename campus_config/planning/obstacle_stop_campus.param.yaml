@@ -1,0 +1,128 @@
+/**:
+  ros__parameters:
+    # CAMPUS-OPTIMIZED OBSTACLE STOP PARAMETERS
+    # Enhanced safety for pedestrian-dense campus environment
+
+    # == stop planning ==
+    # Increased safety margins for campus pedestrians
+    stop_planning:
+      stop_margin: 5.5                        # Default: 5.0 → Campus: 5.5 m (extra margin)
+      terminal_stop_margin: 3.5               # Default: 3.0 → Campus: 3.5 m
+      min_behavior_stop_margin: 3.5           # Default: 3.0 → Campus: 3.5 m
+      step_length: 1.0
+      extend_distance: 0.0
+      expand_slow_down_range: 1.0
+      max_yaw_deviation_rad: 0.785
+
+    # == obstacle filtering ==
+    obstacle_filtering:
+      # More conservative filtering for campus
+      avoid_inside_vehicles_velocity: 1.0     # Default: 1.0 (campus: keep)
+      ignored_outside_obstacle_type: "unknown"
+      outside_obstacle_min_velocity_threshold: 0.5  # Default: 0.5 (detect slow pedestrians)
+      enable_stop_for_inside_objects: true    # Default: true (campus: definitely)
+
+      # Object types to consider - PEDESTRIAN PRIORITY
+      object_type:
+        inside:
+          unknown: true
+          car: false
+          truck: false
+          bus: false
+          trailer: false
+          motorcycle: true
+          bicycle: true
+          pedestrian: true                    # CRITICAL for campus
+
+        outside:
+          unknown: false
+          car: false
+          truck: false
+          bus: false
+          trailer: false
+          motorcycle: false
+          bicycle: false
+          pedestrian: false                   # Don't stop for outside pedestrians (avoid over-caution)
+
+      # Velocity thresholds
+      obstacle_velocity_threshold_to_stop: 2.5  # Default: 3.0 → Campus: 2.5 m/s (stop for slower)
+      obstacle_velocity_threshold_from_stop: 3.0  # Default: 3.5 → Campus: 3.0 m/s
+
+      # Lateral margins - TIGHTER for campus paths
+      max_lat_margin: 0.4                     # Default: 0.3 → Campus: 0.4 m (wider detection)
+      max_lat_margin_against_unknown: 0.5     # Default: not set → Campus: 0.5 m
+
+      # Outside obstacle parameters
+      outside_obstacle:
+        max_lateral_time_margin: 5.0          # Default: 4.5 → Campus: 5.0 s (more conservative)
+        ego_obstacle_overlap_time_threshold: 1.5  # Default: 1.5 (keep)
+        max_prediction_time_for_collision_check: 10.0  # Default: 10.0 (keep)
+
+        # PEDESTRIAN-SPECIFIC parameters
+        pedestrian_deceleration_rate: 0.3     # Default: 0.5 → Campus: 0.3 m/s² (assume slower stop)
+        bicycle_deceleration_rate: 0.4        # Default: 0.5 → Campus: 0.4 m/s²
+
+      # Crossing obstacle parameters
+      crossing_obstacle:
+        collision_time_margin: 1.5            # Default: 1.0 → Campus: 1.5 s (more time)
+        collision_time_margin_for_overtaken_object: 2.0  # Default: not set → Campus: 2.0 s
+        ego_obstacle_overlap_time_threshold: 1.5
+        max_prediction_time_for_collision_check: 10.0
+
+    # == decimation ==
+    decimate_trajectory_step_length: 2.0
+
+    # == planning ==
+    # Smoother velocity planning for campus comfort
+    planning:
+      state_clear_time: 2.0
+      suppress_sudden_stop: true              # Campus: avoid sudden stops (comfort)
+
+      stop_on_target:
+        max_allowed_velocity_deviation: 0.3
+        delay_time: 1.0
+
+      velocity_planning:
+        type: "pid"  # PID or optimization
+        max_ego_accel: 1.0                    # Default: not set → Campus: 1.0 m/s² (comfortable)
+        min_ego_accel: -1.5                   # Default: not set → Campus: -1.5 m/s² (gentle)
+        max_ego_jerk: 0.8                     # Default: not set → Campus: 0.8 m/s³ (smooth)
+        min_ego_jerk: -1.5                    # Default: not set → Campus: -1.5 m/s³
+
+        # PID-based velocity planning
+        pid:
+          kp: 2.0
+          ki: 0.0
+          kd: 1.0
+          output_ratio: 0.5
+          enable_jerk_limit_to_output_ratio: true
+
+      slow_down_planning:
+        state_duration: 1.0
+
+        velocity:
+          max_ego_accel: 0.8                  # Campus: gentle slow down
+          min_ego_accel: -1.2
+          max_ego_jerk: 0.6
+          min_ego_jerk: -1.0
+
+        distance:
+          min_ego_accel: -1.0
+          min_ego_jerk: -0.8
+
+      slow_down_velocity: 2.0                 # Default: not set → Campus: 2.0 m/s (7.2 km/h)
+
+    # == longitudinal info ==
+    longitudinal_info:
+      # Time-to-collision based decisions
+      time_to_collision:
+        margin_time: 2.0                      # Default: not set → Campus: 2.0 s (safer)
+
+      # Distance-based decisions
+      distance:
+        enable_to_consider_current_pose: true
+        margin_distance: 10.0                 # Campus: 10 m warning distance
+
+    # == debug ==
+    enable_debug_info: true
+    enable_calculation_time_info: false
