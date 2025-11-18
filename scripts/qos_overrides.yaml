@@ -1,0 +1,54 @@
+# QoS overrides for rosbag recording
+# This helps ensure all messages are captured reliably
+
+# Override for perception topics (often use best effort)
+/perception/object_recognition/detection/objects:
+  reliability: best_effort
+  durability: volatile
+  history: keep_last
+  depth: 10
+
+/perception/object_recognition/tracking/objects:
+  reliability: best_effort
+  durability: volatile
+  history: keep_last
+  depth: 10
+
+/perception/object_recognition/objects:
+  reliability: best_effort
+  durability: volatile
+  history: keep_last
+  depth: 10
+
+# Override for sensor topics
+/sensing/lidar/concatenated/pointcloud:
+  reliability: best_effort
+  durability: volatile
+  history: keep_last
+  depth: 5
+
+/sensing/camera/*/image_raw:
+  reliability: best_effort
+  durability: volatile
+  history: keep_last
+  depth: 1
+
+# Planning topics (usually reliable)
+/planning/scenario_planning/trajectory:
+  reliability: reliable
+  durability: volatile
+  history: keep_last
+  depth: 10
+
+# Control topics (critical, use reliable)
+/control/command/control_cmd:
+  reliability: reliable
+  durability: volatile
+  history: keep_last
+  depth: 10
+
+/control/trajectory_follower/lateral/control_cmd:
+  reliability: reliable
+  durability: volatile
+  history: keep_last
+  depth: 10
